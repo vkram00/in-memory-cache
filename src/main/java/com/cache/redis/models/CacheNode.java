@@ -1,24 +1,23 @@
 package com.cache.redis.models;
 
-import com.cache.redis.interfaces.INode;
+import com.cache.redis.generics.Key;
+import com.cache.redis.generics.Value;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.concurrent.TimeUnit;
 
-@Getter
-@Setter
-public class CacheNode implements INode {
+@Getter @Setter public class CacheNode {
 
-	private final String key;
-	private String value;
+	private final Key key;
+	private Value value;
 	private final Long ttl;
 	private final TimeUnit timeUnit;
 	private final Long creationTime;
 	private CacheNode nextNode;
 	private CacheNode prevNode;
 
-	public CacheNode(String key, String value, Long ttl, TimeUnit tunit) {
+	public CacheNode(Key key, Value value, Long ttl, TimeUnit tunit) {
 		this.key = key;
 		this.value = value;
 		this.ttl = ttl;
@@ -28,7 +27,22 @@ public class CacheNode implements INode {
 		this.nextNode = null;
 	}
 
-	@Override public Long getExpiryTime() {
+	public void setValue(Value value) {
+		this.value = value;
+	}
+
+	public void setPrevNode(CacheNode node) {
+
+		this.prevNode = node;
+	}
+
+	public void setNextNode(CacheNode node) {
+
+		this.nextNode = node;
+	}
+
+	public Long getExpiryTime() {
+
 		return (this.creationTime + this.timeUnit.toMillis(ttl));
 	}
 }
